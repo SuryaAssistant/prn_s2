@@ -52,6 +52,10 @@ int nowBoostValue = 0;
 int maxInputGateValue = 2000;
 int nowInputGateValue = 0;
 
+// Switching Transformer (50KHz)
+int maxTrafoSwitchingValue = 144;
+int nowTrafoSwitchingValue = 0;
+
 // Analog Reading
 uint32_t adcReading[6];
 
@@ -185,7 +189,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 
   // Set all PWM to Zero
-  TIM1->CCR1 = 0;
+  TIM1->CCR1 = nowTrafoSwitchingValue;
   TIM1->CCR2 = nowIsolatedBuckValue;
 
   TIM3->CCR1 = nowBoostValue;
@@ -220,23 +224,29 @@ int main(void)
 	  temperature1 = ((adcValue4 / 4096) * 3.3) * 100;
 	  temperature2 = ((adcValue5 / 4096) * 3.3) * 100;
 
-
+	  /*
 	  // Take Action based on Battery Voltage
+	  // inverter mode when voltage > 50V
 	  if (batteryVoltage > 50)
 	  {
 		  inverterMode = 1;
 	  }
 
-	  if (batteryVoltage < 40)
+	  // charging mode when voltage < 39V
+	  if (batteryVoltage < 39)
 	  {
 		  inverterMode = 0;
 	  }
+	  */
 
 	  // Decide Mode to be used
+	  inverterMode = 1;
+
 	  // If Charging Mode is used
 	  if (inverterMode == 0)
 	  {
 		  // Turn off inverter mode mosfet
+		  HAL_GPIO_WritePin(GPIOB, FORWARD_Pin, GPIO_PIN_RESET);
 
 		  // Stop Input Voltage
 		  nowInputGateValue = 0;
@@ -257,7 +267,8 @@ int main(void)
 		  // to prevent short circuit
 		  if (ctVoltage == 0)
 		  {
-			  //do here
+			  HAL_GPIO_WritePin(GPIOB, REVERSE_Pin, GPIO_PIN_SET);
+			  HAL_Delay(1);
 		  }
 
 
@@ -272,6 +283,7 @@ int main(void)
 	  if (inverterMode == 1)
 	  {
 		  // Turn off charging mode mosfet
+		  HAL_GPIO_WritePin(GPIOB, REVERSE_Pin, GPIO_PIN_RESET);
 
 		  // Stop Boost Converter
 		  nowBoostValue = 0;
@@ -281,11 +293,16 @@ int main(void)
 		  nowIsolatedBuckValue = maxIsolatedBuckValue / 2;
 		  TIM1->CCR2 = nowIsolatedBuckValue;
 
+		  // Run Switching for Trafo
+		  nowTrafoSwitchingValue = maxTrafoSwitchingValue / 2;
+		  TIM1->CCR1 = nowTrafoSwitchingValue;
+
 		  // Activate Forward Mosfet
+		  HAL_GPIO_WritePin(GPIOB, FORWARD_Pin, GPIO_PIN_SET);
 
 		  // Conditioning input voltage
 
-		  if (ledCounter >= 10000)
+		  if (ledCounter >= 20000)
 		  {
 			  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 			  ledCounter = 0;
@@ -756,12 +773,22 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, REVERSE_Pin|FORWARD_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : REVERSE_Pin FORWARD_Pin */
+  GPIO_InitStruct.Pin = REVERSE_Pin|FORWARD_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
