@@ -1,0 +1,229 @@
+3.2.5
+2021-12-16
+Updating the development system to the latest Debian stable version (bullseye).
+Updates for Qt 5.15 (from bullseye).
+Many small GUI improvements / fixes (thanks ericfont).
+User selectable themes (auto/light/dark).
+
+3.2.4
+2021-07-14
+Possibility to select Fusion style in options menu (fits on 1280x720 screen)
+Select calibration frequency faster from ComboBox
+Chinese translation
+
+3.2.3
+2021-05-24
+Auto detect OpenGL version to better support (especially) Windows installs (fix #184)
+Correct initial sample rate value (fix #185)
+Well structured verbosity option to explore and debug program sequence 
+
+3.2.2
+2021-04-18
+New JSON exporter
+New complete Polish localisation
+CI switched from appveyor to GitHub Actions
+Minor localisation fixes
+
+3.2.1
+2021-04-05
+Two new interpolation modes: step and sinc
+Fix Windows issue with cyrillic user names
+
+3.2
+2021-02-28
+Simultaneous use of more than one device is possible
+Scope settings are saved individually based on serial number
+More calibration frequencies (poor man's function generator)
+CI appveyor Linux build system upgraded to Ubuntu 2004, Qt 5.12.8
+CI appveyor Windows build system upgraded to VS 16 2019, Qt 5.15
+No more 32bit binaries
+
+3.1.5
+2020-12-24
+Improvements for small displays (scope fits on screen height >= 720)
+Improvements for high-dpi displays (2K/4K)
+Command line options --font and --size
+Font size in menu Oscilloscope/Settings/Scope
+Hantek_6022B.inf/.cat files support "native" Windows install
+Better trace colors (apply default settings to use them)
+Minor stability improvements
+
+3.1.4
+2020-11-30
+Display THD (optional)
+Display power dissipation of load resistance (optional)
+HF/Normal/LF trigger
+Attenuation setting also for MATH
+Do not close the docks
+Reduce CPU load when display is stopped, faster shutdown
+
+3.1.3
+2020-09-30
+RPM build improvements
+New command line option --fontsize
+Display horizontal trigger level line when marker is moved
+Make smooth trigger setting persistent
+
+3.1.2
+2020-07-29
+Small improvements for FreeBSD
+Hide Windows console
+
+3.1.1
+2020-06-30
+Refresh button to restart roll mode trace
+Help menu link to AC modification howto
+Minor robustness improvements
+
+3.1.1-rc3
+2020-06-26
+Real roll mode for slow sample rates
+
+3.1.1-rc2
+2020-06-23
+Scroll wheel moves the markers
+Configuration menu parameter to use AC coupling HW modification
+
+3.1.1-rc1
+2020-06-20
+Slow timebases up to 10s/div
+Near real time screen updates with trigger mode NONE
+Screenshot and hardcopy are identical to the screen content
+Force OpenGL SL version (option --useGLSL120 or --useGLSL150)
+
+3.1.0
+2020-05-08
+Demo mode without scope hardware (option -d or --demoMode)
+Support for high-dpi displays
+Improved pdf readability
+Russian translation
+
+3.0.4
+2020-04-13
+Better marker setting/removing
+Fix sample rate spinbox handling
+Fix race condition when switching 1ch/2ch
+Persistent calibration out frequency
+FW 0206
+Updated DDS120 FW 0100 (supports more calibration out frequencies)
+Spanish translation
+
+3.0.3
+2020-03-17
+FW 0205
+Fix histogram issue when switching TY -> XY
+
+3.0.2
+2020-03-01
+Apply realtime prio and scheduler
+Histogram for TY voltage traces
+Variable probe gain setting
+French translation complete
+
+3.0.1
+2019-12-13
+More robust USB handling for all OSs
+Improve manipulation and export of frozen or single traces
+Export XY display
+Automatic icon selection for light/dark themes
+Eye candy
+Automatic start after FW upload
+
+3.0.0
+2019-11-15
+Major changes:
+Support for Sainsmart DDS120
+Support for Hantek6022 AC HW modification
+Update to FW 0203
+MacOSX bundle
+Measure duty cycle of triggered trace
+New versioning scheme
+
+v2.16
+2019-10-15
+Major changes from v2.16-rc1:
+Display measured width of triggered pulse in top line.
+Set OpenGL ES as default for Raspberry Pi.
+
+v2.16-rc1
+2019-10-11
+Major changes from v2.15:
+Fix #26 (array overrun during fast increasing of timebase setting)
+
+v2.15 - withdrawn due to #26
+2019-10-05
+Major changes from v2.14:
+Automatic translation (qt linguist),
+better automatic versioning (commit date & build number),
+Sinc interpolation for fast timebase settings,
+modification for FreeBSD compiling.
+
+v2.14
+2019-09-08
+Major changes from v2.13:
+Vpp measure, more oversampling, faster display refresh,
+alternating trigger, faster trigger (and new smooth trigger mode),
+add support for Voltcraft DSO-2020 USB oscilloscope.
+
+v2.13
+2019-08-09
+Major changes from v2.12:
+User manual, new icons.
+Calculate and display dB of AC value.
+
+v2.12
+2019-07-07
+Major changes from v2.11:
+Better frequency detection, Gauss window, 
+normalise all windows to 0 dBV display,
+new math mode CH1*CH2.
+
+v2.11
+2019-06-28
+Major changes from v2.10:
+New math mode, calculate AC part of CH1/CH2
+
+v2.10
+2019-06-10
+Major changes from v2.09:
+Use new FW 0202 that allows more and better structured sample rates,
+reload the correct FW version if the wrong version was loaded before.
+
+v2.09
+2019-05-25
+Major changes from v2.08:
+Add slower timebases 20, 50, 100 ms/div with increased samplesize.
+
+v2.08
+2019-05-24
+Major changes from v2.07:
+This release fixes the quite unstable spectrum display. The annoying amplitude jitter has gone.
+
+v2.07
+2019-05-22
+Major changes from v2.06:
+First complete free open source release.
+No longer dependent on nonfree Hantek firmware.
+
+v2.06
+2019-05-14
+Major changes from v2.05:
+Refactor triggering, move from postprocessing chain into earlier hantekdsocontrol.
+Last release with 2090,2150, 2250 and 5200 support.
+
+v2.05
+2019-05-10
+Major changes from v2.03:
+Increase sample size to 20000, better trigger modes
+
+v2.04 - removed due to issues with 10X probe display
+
+v2.03
+2019-05-05
+Major changes from v2.02:
+New checkbox for 10X probes.
+
+v2.02
+2019-04-26
+Major changes from v2.03:
+1st binary release after transfer to OpenHantek/OpenHantek6022

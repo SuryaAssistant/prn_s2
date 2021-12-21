@@ -1,0 +1,17 @@
+.bak
+.o
+.so
+.*~
+*~
+*.orig
+*.new
+*.diff
+CMakeLists.txt.user
+build*
+firmware/hex
+*.json
+*.kate-swp
+.directory
+*.autosave
+ui_*.h
+*.sh
