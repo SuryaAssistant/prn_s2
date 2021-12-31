@@ -24,7 +24,9 @@
 
 #include "math.h"
 
+// if math.h didn't works, use the define below
 //#define M_PI 3.14159265358979323846264338328
+
 #define F_CPU 72000000		// 72MHz
 #define AC_FREQ 50          // 50Hz ac outlet
 #define period 600			// Timer 2 period
@@ -32,8 +34,8 @@
 
 const int sinDivision = F_CPU/presc/AC_FREQ/period;
 
-uint32_t spwmArray[151];
-float spwmArrayTemp;
+uint32_t lookUp[151];
+float temp;
 
 // Mode
 // Mode 0 for charging
@@ -100,8 +102,6 @@ int ledCounter = 0;
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
-I2C_HandleTypeDef hi2c1;
-
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
@@ -120,7 +120,6 @@ static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM1_Init(void);
-static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -164,15 +163,14 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM4_Init();
   MX_TIM1_Init();
-  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   // Create SPWM Array (DO NOT CHANGE)
 
   for (int i=0; i<(sinDivision/2); i++)
   {
-	  spwmArrayTemp = sin((i+0.5) * 2 * M_PI / sinDivision) * period;
-	  spwmArray[i] = (int)(spwmArrayTemp+0.5);
+	  temp = sin((i+0.5) * 2 * M_PI / sinDivision) * period;
+	  lookUp[i] = (int)(temp+0.5);
   }
 
   htim2.Instance->CCR2 = 0;
@@ -183,6 +181,7 @@ int main(void)
 
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
 
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
 
@@ -191,6 +190,7 @@ int main(void)
   // Set all PWM to Zero
   TIM1->CCR1 = nowTrafoSwitchingValue;
   TIM1->CCR2 = nowIsolatedBuckValue;
+  TIM1->CCR3 = maxTrafoSwitchingValue;
 
   TIM3->CCR1 = nowBoostValue;
 
@@ -289,18 +289,35 @@ int main(void)
 		  nowBoostValue = 0;
 		  TIM3->CCR1 = nowBoostValue;
 
-		  // Run Isolated Buck Converter
+		  // Run Isolated Buck Converter at 50% duty cycle
 		  nowIsolatedBuckValue = maxIsolatedBuckValue / 2;
 		  TIM1->CCR2 = nowIsolatedBuckValue;
 
-		  // Run Switching for Trafo
+		  // Run Switching for Trafo at 50% duty cycle
 		  nowTrafoSwitchingValue = maxTrafoSwitchingValue / 2;
 		  TIM1->CCR1 = nowTrafoSwitchingValue;
+		  TIM1->CCR3 = nowTrafoSwitchingValue;
 
 		  // Activate Forward Mosfet
 		  HAL_GPIO_WritePin(GPIOB, FORWARD_Pin, GPIO_PIN_SET);
+		  //HAL_GPIO_WritePin(GPIOB, FORWARD_Pin, GPIO_PIN_RESET);
 
 		  // Conditioning input voltage
+		  // set to x Volt
+		  if(batteryVoltage < 10)
+		  {
+			  nowInputGateValue = nowInputGateValue+1;
+		  }
+		  if(batteryVoltage > 10)
+		  {
+			  nowInputGateValue = nowInputGateValue-1;
+		  }
+		  if(batteryVoltage == 10)
+		  {
+			  nowInputGateValue = nowInputGateValue;
+		  }
+		  //TIM4->CCR1 = nowInputGateValue;
+		  TIM4->CCR1 = maxInputGateValue/2;
 
 		  if (ledCounter >= 20000)
 		  {
@@ -353,7 +370,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV8;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -446,40 +463,6 @@ static void MX_ADC1_Init(void)
 }
 
 /**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C1_Init(void)
-{
-
-  /* USER CODE BEGIN I2C1_Init 0 */
-
-  /* USER CODE END I2C1_Init 0 */
-
-  /* USER CODE BEGIN I2C1_Init 1 */
-
-  /* USER CODE END I2C1_Init 1 */
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
-
-}
-
-/**
   * @brief TIM1 Initialization Function
   * @param None
   * @retval None
@@ -537,6 +520,11 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
   }
@@ -793,7 +781,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	static int num=0;
@@ -827,18 +814,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 	if(toggling == 0 && delay1 !=1)
 	{
-		htim2.Instance->CCR2 = spwmArray[num];
+		htim2.Instance->CCR2 = lookUp[num];
 		htim2.Instance->CCR3 = 0;
 	}
 	else if(toggling == 1 && delay1 !=1)
 	{
 		htim2.Instance->CCR2 = 0;
-		htim2.Instance->CCR3 = spwmArray[num];
+		htim2.Instance->CCR3 = lookUp[num];
 	}
 
 	num++;
 }
-
 
 /* USER CODE END 4 */
 
