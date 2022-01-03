@@ -44,7 +44,7 @@ This Repository use 4 timer with different PWM frequency for all Timer.
 The frequency is set by changing the prescaler and counter in every Timer.
 
 | Timer | Prescaler | Counter | Frequency |
-|---|---|
+|---|---|---|---|
 | TIM1 | 10-1 | 144 | 50 kHz |
 | TIM2 | 8-1 | 600 | |
 | TIM3 | 10-1 | 288 | 25 kHz |
@@ -54,7 +54,7 @@ Set the timer configuration as same as configuration in the table below.
 For the Channel, set channel as `PWM Generation CHx`.
 
 | Timer | Channel | Polarity |
-|---|---|
+|---|---|---|
 | TIM1 | CH1 | LOW |
 | TIM1 | CH2 | LOW |
 | TIM1 | CH3 | HIGH |
