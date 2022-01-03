@@ -53,7 +53,7 @@ Extract the zip file and then move the `stm32` folder into <b>STM32CubeIDE works
 </span>
 
 ## Further Information
-- Read the STM32CubeIDE timer and ADC configuration in https://github.com/SuryaAssistant/prn_s2/tutorial
-- Read SPWM specific configuration in https://github.com/SuryaAssistant/prn_s2/spwm
-- PCB schematic and board Design Documentation in https://github.com/SuryaAssistant/prn_s2/pcb
+- Read the STM32CubeIDE timer and ADC configuration in https://github.com/SuryaAssistant/prn_s2/tree/main/tutorial
+- Read SPWM specific configuration in https://github.com/SuryaAssistant/prn_s2/tree/main/spwm
+- PCB schematic and board Design Documentation in https://github.com/SuryaAssistant/prn_s2/tree/main/pcb
 
