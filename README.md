@@ -38,9 +38,12 @@ Download this repository by clicking green button in right-top of repository.
 
 Extract the zip file and then move the `stm32` folder into <b>STM32CubeIDE workspace</b> in (usually) `C:\Users\{Your_Computer_Name}\STM32CubeIDE\{Your_Workspace_Name}\`.
 
-## Block Diagram
-
-Tegangan keluaran dari inverter ditetapkan sebesar 220VAC. Tegangan ini dapat beruba
+## Clock Configuration
+<span align="center">
+  
+ ![Logo](https://github.com/SuryaAssistant/prn_s2/blob/main/img/clock.png)
+  
+</span>
 
 ## Pinout
 <span align="center">
@@ -53,3 +56,4 @@ Tegangan keluaran dari inverter ditetapkan sebesar 220VAC. Tegangan ini dapat be
 - Read the STM32CubeIDE timer and ADC configuration in https://github.com/SuryaAssistant/prn_s2/tutorial
 - Read SPWM specific configuration in https://github.com/SuryaAssistant/prn_s2/spwm
 - PCB schematic and board Design Documentation in https://github.com/SuryaAssistant/prn_s2/pcb
+
