@@ -8,6 +8,8 @@ STM32 Code
 
 September - December 2021
 
+This code is open to copy for Educational purpose only and not for commercial use
+
 </span>
 <!-- End of Title -->
 
